@@ -37,7 +37,18 @@ class FastY1Approx:
         logP = -0.5 * (d @ self.invC @ d)
         return logP
 
-# def test():
-#     import emcee
-#     loglike = FastY1Approx('des')
-#     emcee.utils.
+def test():
+    import emcee
+    import pylab
+    logpost = FastY1Approx('des')
+    walkers = 64
+    ndim = logpost.n
+    nsamp = 10000
+    p0=emcee.utils.sample_ball(logpost.mu, 0.01*logpost.C.diagonal()**0.5,size=walkers)
+    sampler=emcee.EnsembleSampler(walkers, ndim, logpost)
+    sampler.run_mcmc(p0, nsamp)
+    pylab.hist(sampler.flatchain[:,0], bins=50)
+    pylab.show()
+
+if __name__ == '__main__':
+    test()
